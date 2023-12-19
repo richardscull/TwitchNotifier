@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Twitch Botifier</title>
+    <style>
+      body {
+        background-color: #18181b;
+        display: flex;
+        justify-content: center;
+        height: 100vh;
+        font-family: sans-serif;
+        color: #fff;
+      }
+
+      div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <img src="../../output.gif" alt="Twitch Botifier" />
+      <h1>You are sucessfully logged in! 🎉</h1>
+      <p>
+        You can now close this window and go back to the bot. <br />
+        If you are not redirected automatically, click
+        <a href="tg://resolve?domain=TwitchNotifier_tBot">here</a>.
+      </p>
+    </div>
+  </body>
+</html>
+
+<script>
+  window.location.href = "tg://resolve?domain=TwitchNotifier_tBot";
+  window.location.replace("tg://resolve?domain=TwitchNotifier_tBot");
+</script>
