@@ -1,7 +1,7 @@
 require("dotenv").config();
 import "./utils/checkEnv";
 
-// Used for debugging purposes,
+// 📃: Used for debugging purposes,
 // if you are not a developer it's better to leave it as false
 export const USELOGGER = true;
 

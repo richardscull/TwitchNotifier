@@ -1,0 +1,13 @@
+{
+  "errors": {
+    "error": "⚠️ An error occured! Please, try again.",
+    "invalid_token": "❌ Sorry, but you can't use this command due to an invalid/undefined twitch token. Please, use /login command."
+  },
+  "commands": {
+    "login": {
+      "login": "Login",
+      "login_link": "🚀 Please login with this link below! It will expire in 10 minutes.",
+      "already_logged_in": "👍 You are already logged in! If you wishing to logout, please use /logout command."
+    }
+  }
+}

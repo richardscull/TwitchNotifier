@@ -8,20 +8,21 @@ const { HOST_URI } = process.env;
 
 module.exports = {
   regex: /login/,
-  async execute(msg: Message, ctx: TelegramClient) {
+  requireToken: false,
+  async execute(msg: Message, localizationFile: any, ctx: TelegramClient) {
     if ((await IsTwitchTokenValid(msg.from?.id!)) === false) {
       const state = await CreateLoginRequest(msg.from?.id!);
       if (!state) {
         log("Error while creating login request!");
-        return ctx.Reply(msg, "🚨 An error occured!");
+        return ctx.Reply(msg, `🚨 ${localizationFile["errors"]["error"]}`);
       }
 
-      ctx.Reply(msg, `Please login with this link below!`, {
+      ctx.Reply(msg, localizationFile["commands"]["login"]["login_link"], {
         reply_markup: {
           inline_keyboard: [
             [
               {
-                text: "Login",
+                text: localizationFile["commands"]["login"]["login"],
                 url: `${HOST_URI}/auth/twitch?state=${state}`,
               },
             ],
@@ -30,7 +31,10 @@ module.exports = {
         includelocalhost: true,
       });
     } else {
-      ctx.Reply(msg, "You are already logged in! 🚀");
+      ctx.Reply(
+        msg,
+        localizationFile["commands"]["login"]["already_logged_in"]
+      );
     }
   },
 };

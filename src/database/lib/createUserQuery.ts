@@ -5,6 +5,7 @@ export default async function CreateUserQuery(user_id: number) {
   return await UserModel.create({
     user_id,
     is_active: true,
+    localization: "english",
     streamers: [],
   }).then(
     (user) => {

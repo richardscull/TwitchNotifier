@@ -4,6 +4,7 @@ interface UserAttributes {
   user_id: string;
   token?: HashedToken;
   is_active: boolean;
+  localization: "english" | "russian";
   streamers: string[];
   login_request?: LoginRequest;
 }
@@ -31,6 +32,7 @@ const schema = new Schema<UserAttributes>(
       required: false,
     },
     is_active: { type: Boolean, default: true },
+    localization: { type: String, required: true },
     streamers: { type: [String], required: true },
     login_request: {
       type: {

@@ -5,6 +5,7 @@ import log from "../utils/logger";
 import IsTwitchTokenValid from "../database/lib/isTwitchTokenValid";
 import IsUserExist from "../database/lib/isUserExist";
 import createUserQuery from "../database/lib/createUserQuery";
+import { GetLocalizationFile } from "../utils/localization";
 
 export class TelegramClient extends TelegramBot {
   constructor(token: string) {
@@ -16,24 +17,31 @@ export class TelegramClient extends TelegramBot {
       const command = require(path.join(commandsDir, file));
 
       this.onText(command.regex, async (msg: Message) => {
+        // Check if user exists in the database
         await IsUserExist(msg.from?.id!).then(async (isExist: boolean) => {
           if (!isExist) return await createUserQuery(msg.from?.id!);
         });
 
-        const commandsWithToken = ["/start/"];
-        if (commandsWithToken.includes(command.regex.toString())) {
+        // Get localization file
+        const localizationFile = (await GetLocalizationFile(
+          msg.from?.id!
+        )) as any;
+
+        // Check if command requires a twitch token
+        if ((command.requireToken || false) === true) {
           return IsTwitchTokenValid(msg.from?.id!).then((isValid: boolean) => {
             if (!isValid)
               return this.Reply(
                 msg,
-                `Sorry, but you can't use this command due to an invalid/undefined twitch token. Please, use /login to login again.`
+                localizationFile["errors"]["invalid_token"]
               );
 
             return command.execute(msg, this);
           });
         }
 
-        command.execute(msg, this);
+        // Execute the command
+        command.execute(msg, localizationFile, this);
       });
 
       log(`📑 Loaded command: ${command.regex}`);
