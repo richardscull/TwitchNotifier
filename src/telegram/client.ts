@@ -7,6 +7,11 @@ import IsUserExist from "../database/lib/isUserExist";
 import createUserQuery from "../database/lib/createUserQuery";
 import { GetLocalizationFile } from "../utils/localization";
 
+export interface Attributes {
+  message: Message ,
+  match: RegExpExecArray | null
+}
+
 export class TelegramClient extends TelegramBot {
   constructor(token: string) {
     super(token, { polling: true });
@@ -16,7 +21,7 @@ export class TelegramClient extends TelegramBot {
     fs.readdirSync(commandsDir).forEach((file) => {
       const command = require(path.join(commandsDir, file));
 
-      this.onText(command.regex, async (msg: Message) => {
+      this.onText(command.regex, async (msg: Message, match: RegExpExecArray | null) => {
         // Check if user exists in the database
         await IsUserExist(msg.from?.id!).then(async (isExist: boolean) => {
           if (!isExist) return await createUserQuery(msg.from?.id!);
@@ -36,12 +41,12 @@ export class TelegramClient extends TelegramBot {
                 localizationFile["errors"]["invalid_token"]
               );
 
-            return command.execute(msg, this);
+            return command.execute({message: msg, match}, localizationFile, this);
           });
         }
 
         // Execute the command
-        command.execute(msg, localizationFile, this);
+        command.execute({message: msg, match},localizationFile, this);
       });
 
       log(`📑 Loaded command: ${command.regex}`);

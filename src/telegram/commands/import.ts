@@ -1,10 +1,10 @@
 import { Message } from "node-telegram-bot-api";
-import { TelegramClient } from "../client";
+import { Attributes, TelegramClient } from "../client";
 
 module.exports = {
   regex: /import/,
   requireToken: true,
-  execute(msg: Message, localizationFile: any, ctx: TelegramClient) {
-    ctx.Reply(msg, "Hello, world!");
+  execute(attr: Attributes, localizationFile: any, ctx: TelegramClient) {
+    ctx.Reply(attr.message, "Hello, world!");
   },
 };

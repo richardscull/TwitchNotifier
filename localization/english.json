@@ -9,6 +9,12 @@
       "login_link": "🚀 Please login with this link below! It will expire in 10 minutes.",
       "logged_in": "🎉 You are now logged in! You can now use command with ⭐",
       "already_logged_in": "👍 You are already logged in! If you wishing to logout, please use /logout command."
+    },
+    "follow": {
+      "already_follows": "You already follow this streamer. use /unfollow to unfollow them",
+      "followed": "You are now following this streamer",
+      "dont_follow": "You don't follow this streamer. use /follow to follow them",
+      "unfollowed": "You are no longer following this streamer"
     }
   }
 }
