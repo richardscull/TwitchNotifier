@@ -3,6 +3,9 @@ import path from "path";
 import log from "../utils/logger";
 import UserModel from "../database/models/users";
 import { Decrypt, Encrypt } from "../utils/crypterTools";
+import { SendNotification } from "../telegram/events/sendNotification";
+import Client from "../telegram/client";
+import { GetLocalizationFile } from "../utils/localization";
 const { TWITCH_CLIENT_ID, TWITCH_CLIENT_TOKEN, PORT } = process.env;
 
 (async () => {
@@ -90,6 +93,14 @@ const { TWITCH_CLIENT_ID, TWITCH_CLIENT_TOKEN, PORT } = process.env;
         if (!user) {
           return res.status(400).send({ error: "Bad request: User not found" });
         } else {
+          GetLocalizationFile(Number(user.user_id)).then((file) => {
+            SendNotification(
+              user.user_id,
+              file["commands"]["login"]["logged_in"],
+              Client
+            );
+          });
+
           return res.redirect("/auth/twitch/redirect");
         }
       });
