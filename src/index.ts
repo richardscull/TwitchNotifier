@@ -8,5 +8,6 @@ export const USELOGGER = true;
 import "./database/main";
 import "./telegram/client";
 import "./server/main";
+import "./utils/handleExit";
 
 console.log("🚀 Started successfully");
