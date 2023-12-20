@@ -20,8 +20,9 @@
     },
     "follow": {
       "already_follows": "You already follow this streamer. use /unfollow to unfollow them",
-      "followed": "You are now following this streamer",
+      "followed": "You are now following [%streamer%](%url%)",
       "dont_follow": "You don't follow this streamer. use /follow to follow them",
+      "user_not_found": "This streamer doesn't exist",
       "unfollowed": "You are no longer following this streamer"
     }
   }

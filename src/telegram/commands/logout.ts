@@ -1,5 +1,6 @@
 import { Attributes, TelegramClient } from "../client";
 import { IsHasTwitchToken } from "../../database/lib/isTwitchTokenValid";
+import UserModel from "../../database/models/users";
 
 module.exports = {
   regex: /logout/,
@@ -35,7 +36,14 @@ module.exports = {
 module.exports.confirm = (attr: Attributes, localizationFile: any) => {
   const { ctx, msg } = attr;
 
-  //todo: handle logout!
+  UserModel.findOneAndUpdate(
+    { user_id: attr.userId },
+    {
+      $unset: { token: "" },
+    }
+  )
+    .lean()
+    .exec();
 
   ctx.EditMessage(msg, localizationFile["commands"]["logout"]["logged_out"]);
 };

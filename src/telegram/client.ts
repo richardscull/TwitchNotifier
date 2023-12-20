@@ -67,11 +67,16 @@ export class TelegramClient extends TelegramBot {
   public Reply(msg: Message, text: string, options?: any) {
     this.sendMessage(msg.chat.id, text, {
       reply_to_message_id: msg.message_id,
+      parse_mode: "Markdown",
       ...options,
     }).catch((err) => {
-      if (err.response.body.error_code === 400 && options.includelocalhost) {
+      if (
+        err.response.body.error_code === 400 &&
+        options &&
+        options.includelocalhost
+      ) {
         const url = options.reply_markup.inline_keyboard[0][0].url;
-        return this.sendMessage(msg.chat.id, `${text} ${url}`, {
+        return this.sendMessage(msg.chat.id, `${text} \n\n🔗 ${url}`, {
           reply_to_message_id: msg.message_id,
         });
       } else {
@@ -80,18 +85,30 @@ export class TelegramClient extends TelegramBot {
     });
   }
 
+  public ReplyWithImage(
+    msg: Message,
+    image: any,
+    text?: string,
+    options?: any
+  ) {
+    this.sendPhoto(msg.chat.id, image, {
+      caption: text,
+      parse_mode: "Markdown",
+      reply_to_message_id: msg.message_id,
+      ...options,
+    });
+  }
+
   public EditMessage(msg: Message, text: string, options?: any) {
     this.editMessageText(text, {
       chat_id: msg.chat.id,
+      parse_mode: "Markdown",
       message_id: msg.message_id,
       ...options,
     });
   }
 
-  public LinkButtons(
-    commandName: string,
-    options?: KeyboardButton[]
-  ) {
+  public LinkButtons(commandName: string, options?: KeyboardButton[]) {
     return options?.map((option) => {
       return {
         text: option.text,
