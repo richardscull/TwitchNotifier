@@ -7,6 +7,6 @@ export const USELOGGER = true;
 
 import "./database/main";
 import "./telegram/client";
-import "./server/twitch";
+import "./server/main";
 
 console.log("🚀 Started successfully");
