@@ -13,3 +13,9 @@ export default async function IsTwitchTokenValid(
     return false;
   }
 }
+
+export async function IsHasTwitchToken(user_id: number): Promise<boolean> {
+  const user = await UserModel.findOne({ user_id }).lean().exec();
+  if (!user || !user.token) return false;
+  return true;
+}

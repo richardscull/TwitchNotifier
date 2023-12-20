@@ -1,44 +1,42 @@
-import { Message } from "node-telegram-bot-api";
-import { Attributes, TelegramClient } from "../client";
+import { Attributes } from "../client";
 import UserModel from "../../database/models/users";
 import log from "../../utils/logger";
-import { Stream } from "stream";
 import StreamerModel from "../../database/models/streamers";
 
 module.exports = {
   regex: /^\/follow (.+)/,
   requireToken: false,
-  async execute(attr: Attributes, localizationFile: any, ctx: TelegramClient) {
-    if (!attr.match || !attr.match[1])
+  async execute(attr: Attributes, localizationFile: any) {
+    const { ctx, msg, userId, match } = attr;
+
+    if (!match || !match[1])
       return ctx.Reply(
-        attr.message,
+        msg,
         localizationFile["errors"]["error"] //todo: change for specific
       );
 
     //todo: write check if user on twitch exist
 
-    const user = await UserModel.findOne({ user_id: attr.message.from?.id! })
-      .lean()
-      .exec();
+    const user = await UserModel.findOne({ user_id: userId }).lean().exec();
     if (!user) return log("Couldn't find user on /follow");
 
-    if (user.streamers.includes(attr.match[1]))
+    if (user.streamers.includes(match[1]))
       return ctx.Reply(
-        attr.message,
+        msg,
         localizationFile["commands"]["follow"]["already_follows"]
       );
 
     UserModel.findOneAndUpdate(
-      { user_id: attr.message.from?.id! },
+      { user_id: userId },
       {
-        $addToSet: { streamers: attr.match[1] },
+        $addToSet: { streamers: match[1] },
       }
     )
       .lean()
       .exec();
 
     StreamerModel.findOneAndUpdate(
-      { username: attr.match[1] },
+      { username: match[1] },
       {
         $inc: { followers: 1 },
       },
@@ -47,9 +45,6 @@ module.exports = {
       .lean()
       .exec();
 
-    return ctx.Reply(
-      attr.message,
-      localizationFile["commands"]["follow"]["followed"]
-    );
+    return ctx.Reply(msg, localizationFile["commands"]["follow"]["followed"]);
   },
 };

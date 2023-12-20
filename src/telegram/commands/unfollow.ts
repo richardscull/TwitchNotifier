@@ -1,4 +1,3 @@
-import { Message } from "node-telegram-bot-api";
 import { Attributes, TelegramClient } from "../client";
 import UserModel from "../../database/models/users";
 import log from "../../utils/logger";
@@ -7,35 +6,35 @@ import StreamerModel from "../../database/models/streamers";
 module.exports = {
   regex: /^\/unfollow (.+)/,
   requireToken: false,
-  async execute(attr: Attributes, localizationFile: any, ctx: TelegramClient) {
-    if (!attr.match || !attr.match[1])
+  async execute(attr: Attributes, localizationFile: any) {
+    const { ctx, msg, userId, match } = attr;
+
+    if (!match || !match[1])
       return ctx.Reply(
-        attr.message,
+        msg,
         localizationFile["errors"]["error"] //todo: change for specific
       );
 
-    const user = await UserModel.findOne({ user_id: attr.message.from?.id! })
-      .lean()
-      .exec();
+    const user = await UserModel.findOne({ user_id: userId }).lean().exec();
     if (!user) return log("Couldn't find user on /unfollow");
 
-    if (!user.streamers.includes(attr.match[1]))
+    if (!user.streamers.includes(match[1]))
       return ctx.Reply(
-        attr.message,
+        msg,
         localizationFile["commands"]["follow"]["dont_follow"]
       );
 
     UserModel.findOneAndUpdate(
-      { user_id: attr.message.from?.id! },
+      { user_id: userId },
       {
-        $pull: { streamers: attr.match[1] },
+        $pull: { streamers: match[1] },
       }
     )
       .lean()
       .exec();
 
     StreamerModel.findOneAndUpdate(
-      { username: attr.match[1] },
+      { username: match[1] },
       {
         $inc: { followers: -1 },
       },
@@ -52,9 +51,6 @@ module.exports = {
         }
       });
 
-    return ctx.Reply(
-      attr.message,
-      localizationFile["commands"]["follow"]["unfollowed"]
-    );
+    return ctx.Reply(msg, localizationFile["commands"]["follow"]["unfollowed"]);
   },
 };

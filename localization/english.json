@@ -10,6 +10,14 @@
       "logged_in": "🎉 You are now logged in! You can now use command with ⭐",
       "already_logged_in": "👍 You are already logged in! If you wishing to logout, please use /logout command."
     },
+    "logout": {
+      "logout": "Logout",
+      "changed_mind": "I changed my mind...",
+      "are_you_sure": "Are you sure you want to logout?",
+      "logged_out": "😭 You are now logged out!",
+      "cancelled": "👍 Logout cancelled!",
+      "already_logged_out": "👍 You are already logged out!"
+    },
     "follow": {
       "already_follows": "You already follow this streamer. use /unfollow to unfollow them",
       "followed": "You are now following this streamer",
