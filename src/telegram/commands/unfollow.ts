@@ -12,17 +12,16 @@ module.exports = {
     if (!match || !match[1])
       return ctx.Reply(
         msg,
-        localizationFile["errors"]["error"] //todo: change for specific
+        { text: localizationFile["errors"]["error"] } //todo: change for specific
       );
 
     const user = await UserModel.findOne({ user_id: userId }).lean().exec();
     if (!user) return log("Couldn't find user on /unfollow");
 
     if (!user.streamers.includes(match[1]))
-      return ctx.Reply(
-        msg,
-        localizationFile["commands"]["follow"]["dont_follow"]
-      );
+      return ctx.Reply(msg, {
+        text: localizationFile["commands"]["follow"]["dont_follow"],
+      });
 
     UserModel.findOneAndUpdate(
       { user_id: userId },
@@ -51,6 +50,8 @@ module.exports = {
         }
       });
 
-    return ctx.Reply(msg, localizationFile["commands"]["follow"]["unfollowed"]);
+    return ctx.Reply(msg, {
+      text: localizationFile["commands"]["follow"]["unfollowed"],
+    });
   },
 };

@@ -39,10 +39,9 @@ module.exports = {
         },
       });
     } else {
-      ctx.Reply(
-        msg,
-        localizationFile["commands"]["login"]["already_logged_in"]
-      );
+      ctx.Reply(msg, {
+        text: localizationFile["commands"]["login"]["already_logged_in"],
+      });
     }
   },
 };

@@ -46,6 +46,12 @@ export class TelegramClient extends TelegramBot {
       log(`📑 Loaded command: ${command.regex}`);
     });
 
+    // Handle invalid commands
+    this.on("message", (msg) => {
+      if (!msg.text?.startsWith("/")) return;
+      handleInvalidCommand({ msg, userId: msg.from?.id!, ctx: this });
+    });
+
     // Handle callback queries
     this.on("callback_query", (query) => {
       this.answerCallbackQuery(query.id).then(async () => {
@@ -92,6 +98,8 @@ export class TelegramClient extends TelegramBot {
         return this.sendMessage(msg.chat.id, text, {
           ...params,
         });
+      } else {
+        log(`🚨 No text or image provided for ${msg.text}`);
       }
     } catch (err: any) {
       log(err);
@@ -141,8 +149,11 @@ async function handleSlashCommand(attr: Attributes, command: any) {
   // Check if command requires a twitch token
   if ((command.requireToken || false) === true) {
     const isValid = await IsTwitchTokenValid(userId);
+
     if (!isValid)
-      return ctx.Reply(msg, localizationFile["errors"]["invalid_token"]);
+      return ctx.Reply(msg, {
+        text: localizationFile["errors"]["invalid_token"],
+      });
   }
 
   const logText = `📨 -  "${msg.from?.first_name}" (${msg.from?.id}) sent command: ${command.regex}`;
@@ -150,4 +161,38 @@ async function handleSlashCommand(attr: Attributes, command: any) {
 
   // Execute the command
   command.execute(attr, localizationFile);
+}
+
+async function handleInvalidCommand(attr: Attributes) {
+  const { msg, userId, ctx } = attr;
+  if (!msg.text) return;
+
+  // Check if user exists in the database
+  await IsUserExist(userId).then(async (isExist: boolean) => {
+    if (!isExist) return await createUserQuery(userId);
+  });
+
+  const localizationFile = (await GetLocalizationFile(attr.userId)) as any;
+
+  const commandName = msg.text.slice(1).split(" ")[0];
+  const isValidCommand = fs
+    .readdirSync(path.join(__dirname, "commands"))
+    .join(" ")
+    .includes(commandName);
+
+  if (!isValidCommand) {
+    return ctx.Reply(msg, {
+      text: localizationFile["errors"]["invalid_command"],
+    });
+  } else {
+    const command = require(path.join(__dirname, "commands", commandName));
+    if (
+      command.regex.toString().includes("(.+)") &&
+      msg.text?.split(" ")[1] === undefined // * Note: looks like a hardcode, because regex can have multiple (.+), but I let it be for now
+    ) {
+      return ctx.Reply(msg, {
+        text: localizationFile["errors"]["invalid_query"],
+      });
+    }
+  }
 }

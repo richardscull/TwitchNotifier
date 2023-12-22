@@ -9,10 +9,9 @@ module.exports = {
     const { ctx, msg, userId } = attr;
 
     if ((await IsHasTwitchToken(userId)) === false)
-      ctx.Reply(
-        msg,
-        localizationFile["commands"]["logout"]["already_logged_out"]
-      );
+      ctx.Reply(msg, {
+        text: localizationFile["commands"]["logout"]["already_logged_out"],
+      });
 
     const buttons = [
       {
