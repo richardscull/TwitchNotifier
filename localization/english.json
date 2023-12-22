@@ -3,6 +3,7 @@
     "error": "⚠️ An error occured! Please, try again.",
     "invalid_token": "❌ Sorry, but you can't use this command due to an invalid/undefined twitch token. Please, use /login command."
   },
+  "start": "👋 Welcome! I'am your personal Twitch bot. I will notify you when your favorite streamers are live.\n\nTo import all your followed streamers, please use /import command, or use `/follow [nickname]` to follow a streamer.\n\nGot questions about other commands? Use /help command.",
   "commands": {
     "login": {
       "login": "Login",

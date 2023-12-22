@@ -5,7 +5,9 @@ module.exports = {
   requireToken: false,
   execute(attr: Attributes, localizationFile: any) {
     const { ctx, msg } = attr;
-    ctx.Reply(msg, "Hello, world!");
-    // todo: select language on first run.
+    ctx.Reply(msg, {
+      text: `*🎋 Twitch Botifier*\n\n${localizationFile["start"]}`,
+      image: "./assets/start.png",
+    });
   },
 };

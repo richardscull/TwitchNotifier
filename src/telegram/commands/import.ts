@@ -6,6 +6,6 @@ module.exports = {
   execute(attr: Attributes, localizationFile: any) {
     const { ctx, msg, userId } = attr;
 
-    ctx.Reply(msg, "Hello, world!");
+    ctx.Reply(msg, { text: "Hello, world!" });
   },
 };

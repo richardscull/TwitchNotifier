@@ -2,6 +2,7 @@ import { Attributes, TelegramClient } from "../client";
 import IsTwitchTokenValid from "../../database/lib/isTwitchTokenValid";
 import CreateLoginRequest from "../../database/lib/createLoginRequest";
 import log from "../../utils/logger";
+import { BRANCH } from "../..";
 
 const { HOST_URI } = process.env;
 
@@ -15,21 +16,27 @@ module.exports = {
       const state = await CreateLoginRequest(userId);
       if (!state) {
         log("Error while creating login request!");
-        return ctx.Reply(msg, `🚨 ${localizationFile["errors"]["error"]}`);
+        return ctx.Reply(msg, {
+          text: `🚨 ${localizationFile["errors"]["error"]}`,
+        });
       }
 
-      ctx.Reply(msg, localizationFile["commands"]["login"]["login_link"], {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: localizationFile["commands"]["login"]["login"],
-                url: `${HOST_URI}/auth/twitch?state=${state}`,
-              },
-            ],
-          ],
+      const loginLink = `${HOST_URI}/auth/twitch?state=${state}`;
+
+      const button = {
+        text: localizationFile["commands"]["login"]["login"],
+        url: loginLink,
+      };
+
+      ctx.Reply(msg, {
+        text:
+          localizationFile["commands"]["login"]["login_link"] +
+          `${(BRANCH == "DEV" && `\n\n🔗: ${loginLink}`) || ""}`,
+        options: {
+          reply_markup:
+            (BRANCH == "PROD" && { inline_keyboard: [[button]] }) || undefined,
+          includelocalhost: true,
         },
-        includelocalhost: true,
       });
     } else {
       ctx.Reply(

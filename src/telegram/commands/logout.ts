@@ -25,9 +25,12 @@ module.exports = {
       },
     ];
 
-    ctx.Reply(msg, localizationFile["commands"]["logout"]["are_you_sure"], {
-      reply_markup: {
-        inline_keyboard: [ctx.LinkButtons("logout", buttons)],
+    ctx.Reply(msg, {
+      text: localizationFile["commands"]["logout"]["are_you_sure"],
+      options: {
+        reply_markup: {
+          inline_keyboard: [ctx.LinkButtons("logout", buttons)],
+        },
       },
     });
   },

@@ -20,6 +20,12 @@ export interface KeyboardButton {
   url?: string;
 }
 
+export interface ReplyOptions {
+  text?: string;
+  image?: string;
+  options?: any;
+}
+
 export class TelegramClient extends TelegramBot {
   constructor(token: string) {
     super(token, { polling: true });
@@ -30,17 +36,17 @@ export class TelegramClient extends TelegramBot {
       const command = require(path.join(commandsDir, file));
       this.onText(
         command.regex,
-        (msg: Message, match: RegExpExecArray | null) => {
+        (msg: Message, match: RegExpExecArray | null) =>
           handleSlashCommand(
             { msg, userId: msg.from?.id!, ctx: this, match },
             command
-          ); //todo: maybe rewrite this?
-        }
+          )
       );
 
       log(`📑 Loaded command: ${command.regex}`);
     });
 
+    // Handle callback queries
     this.on("callback_query", (query) => {
       this.answerCallbackQuery(query.id).then(async () => {
         if (!query.data) return log("Callback data is not set!");
@@ -58,45 +64,38 @@ export class TelegramClient extends TelegramBot {
           attr.userId
         )) as any;
 
+        const logText = `📨 -  "${query.from.first_name}" (${query.from.id}) sent callback: ${command}:${callback}`;
+        log(logText);
+
         // Execute the callback
         callbackFile[callback](attr, localizationFile);
       });
     });
   }
 
-  public Reply(msg: Message, text: string, options?: any) {
-    this.sendMessage(msg.chat.id, text, {
-      reply_to_message_id: msg.message_id,
-      parse_mode: "Markdown",
-      ...options,
-    }).catch((err) => {
-      if (
-        err.response.body.error_code === 400 &&
-        options &&
-        options.includelocalhost
-      ) {
-        const url = options.reply_markup.inline_keyboard[0][0].url;
-        return this.sendMessage(msg.chat.id, `${text} \n\n🔗 ${url}`, {
-          reply_to_message_id: msg.message_id,
-        });
-      } else {
-        log(err);
-      }
-    });
-  }
+  public Reply(msg: Message, replyOptions: ReplyOptions) {
+    const { text, image, options } = replyOptions;
 
-  public ReplyWithImage(
-    msg: Message,
-    image: any,
-    text?: string,
-    options?: any
-  ) {
-    this.sendPhoto(msg.chat.id, image, {
-      caption: text,
-      parse_mode: "Markdown",
+    const params = {
       reply_to_message_id: msg.message_id,
+      parse_mode: "Markdown",
       ...options,
-    });
+    };
+
+    try {
+      if (image) {
+        return this.sendPhoto(msg.chat.id, image, {
+          caption: text,
+          ...params,
+        });
+      } else if (text) {
+        return this.sendMessage(msg.chat.id, text, {
+          ...params,
+        });
+      }
+    } catch (err: any) {
+      log(err);
+    }
   }
 
   public EditMessage(msg: Message, text: string, options?: any) {
@@ -119,15 +118,6 @@ export class TelegramClient extends TelegramBot {
       };
     }) as KeyboardButton[];
   }
-
-  // ! Note: Could be deprecated
-  public ClearKeyboard() {
-    return {
-      reply_markup: {
-        remove_keyboard: true,
-      },
-    };
-  }
 }
 
 /*     CLIENT EXPORT      */
@@ -138,7 +128,7 @@ export default Client;
 /*     FUNCTIONS      */
 
 async function handleSlashCommand(attr: Attributes, command: any) {
-  const { msg, userId, ctx, match } = attr;
+  const { msg, userId, ctx } = attr;
 
   // Check if user exists in the database
   await IsUserExist(userId).then(async (isExist: boolean) => {
@@ -150,13 +140,13 @@ async function handleSlashCommand(attr: Attributes, command: any) {
 
   // Check if command requires a twitch token
   if ((command.requireToken || false) === true) {
-    return IsTwitchTokenValid(userId).then((isValid: boolean) => {
-      if (!isValid)
-        return ctx.Reply(msg, localizationFile["errors"]["invalid_token"]);
-
-      return command.execute(attr, localizationFile); //todo: write both execute as one!
-    });
+    const isValid = await IsTwitchTokenValid(userId);
+    if (!isValid)
+      return ctx.Reply(msg, localizationFile["errors"]["invalid_token"]);
   }
+
+  const logText = `📨 -  "${msg.from?.first_name}" (${msg.from?.id}) sent command: ${command.regex}`;
+  log(logText);
 
   // Execute the command
   command.execute(attr, localizationFile);
