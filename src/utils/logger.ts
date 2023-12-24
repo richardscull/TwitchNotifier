@@ -1,5 +1,6 @@
 import { USELOGGER } from "../index";
 
 export default function log(message: string) {
-  if (USELOGGER) console.log(message);
+  const date = new Date().toLocaleString();
+  if (USELOGGER) console.log(`🕒 ${date} | ${message}`);
 }
