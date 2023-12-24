@@ -2,6 +2,7 @@ import { Attributes, TelegramClient } from "../client";
 import UserModel from "../../database/models/users";
 import log from "../../utils/logger";
 import StreamerModel from "../../database/models/streamers";
+import getUser from "../../twitch/lib/getUser";
 
 module.exports = {
   regex: /^\/unfollow (.+)/,
@@ -18,7 +19,13 @@ module.exports = {
     const user = await UserModel.findOne({ user_id: userId }).lean().exec();
     if (!user) return log("Couldn't find user on /unfollow");
 
-    if (!user.streamers.includes(match[1]))
+    const twitchUser = await getUser(match[1]);
+    if (!twitchUser)
+      return ctx.Reply(msg, {
+        text: localizationFile["commands"]["follow"]["user_not_found"],
+      });
+
+    if (!user.streamers.includes(twitchUser.id))
       return ctx.Reply(msg, {
         text: localizationFile["commands"]["follow"]["dont_follow"],
       });
@@ -26,14 +33,14 @@ module.exports = {
     UserModel.findOneAndUpdate(
       { user_id: userId },
       {
-        $pull: { streamers: match[1] },
+        $pull: { streamers: twitchUser.id },
       }
     )
       .lean()
       .exec();
 
     StreamerModel.findOneAndUpdate(
-      { username: match[1] },
+      { id: twitchUser.id },
       {
         $inc: { followers: -1 },
       },

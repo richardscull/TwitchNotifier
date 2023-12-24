@@ -9,7 +9,7 @@ export const BRANCH = "DEV" as "DEV" | "PROD";
 import "./database/main"; // Load database
 import "./telegram/client"; // Load telegram client
 import "./server/main"; // Start local server
-//import "./twitch/main"; // Start twitch pooler
+import "./twitch/main"; // Start twitch pooler
 
 import "./utils/handleExit";
 

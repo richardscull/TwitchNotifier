@@ -14,7 +14,7 @@ export default async function getUser(username: string) {
       },
     })
     .then((res) => {
-      return res.data.data[0] as UserAttributes;
+      return res.data.data[0] as TwitchUserAttributes;
     })
     .catch((err) => {
       log(err);
