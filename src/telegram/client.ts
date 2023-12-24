@@ -7,6 +7,9 @@ import IsUserExist from "../database/lib/isUserExist";
 import createUserQuery from "../database/lib/createUserQuery";
 import { GetLocalizationFile } from "../utils/localization";
 
+// Disable deprecation warnings
+process.env["NTBA_FIX_350"] = "true";
+
 export interface Attributes {
   msg: Message;
   userId: number;
@@ -22,13 +25,13 @@ export interface KeyboardButton {
 
 export interface ReplyOptions {
   text?: string;
-  image?: string;
+  image?: string | fs.ReadStream;
   options?: any;
 }
 
 export class TelegramClient extends TelegramBot {
   constructor(token: string) {
-    super(token, { polling: true });
+    super(token, { polling: true, filepath: false });
 
     // Load all commands from the commands directory
     const commandsDir = path.join(__dirname, "commands");
@@ -80,7 +83,7 @@ export class TelegramClient extends TelegramBot {
   }
 
   public Reply(msg: Message, replyOptions: ReplyOptions) {
-    const { text, image, options } = replyOptions;
+    let { text, image, options } = replyOptions;
 
     const params = {
       reply_to_message_id: msg.message_id,
@@ -90,6 +93,12 @@ export class TelegramClient extends TelegramBot {
 
     try {
       if (image) {
+        if (typeof image === "string") {
+          if (!fs.existsSync(image))
+            return log("invalid image passed for Reply");
+          image = fs.createReadStream(image);
+        }
+
         return this.sendPhoto(msg.chat.id, image, {
           caption: text,
           ...params,
