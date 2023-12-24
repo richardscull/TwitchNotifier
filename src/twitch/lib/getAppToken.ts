@@ -25,7 +25,6 @@ export default async function getAppToken() {
       }
     )
     .then((res) => {
-      console.log(res.data);
       if (!res.data.access_token) throw new Error("Couldn't get access_token");
 
       OAuthModel.findOneAndUpdate(
