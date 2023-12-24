@@ -3,6 +3,7 @@ import UserModel from "../../database/models/users";
 import log from "../../utils/logger";
 import StreamerModel from "../../database/models/streamers";
 import getUser from "../../twitch/lib/getUser";
+import isOnline from "../../twitch/lib/isOnline";
 
 module.exports = {
   regex: /^\/follow (.+)/,
@@ -46,6 +47,10 @@ module.exports = {
           username: twitchUser.login,
           backgroundImage: twitchUser.profile_image_url,
           profileImage: twitchUser.offline_image_url,
+          isOnline: await isOnline({ id: twitchUser.id }).then((res) => {
+            if (!res) return false;
+            return res.isOnline;
+          }),
         },
         $inc: { followers: 1 },
       },
