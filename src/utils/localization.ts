@@ -1,7 +1,7 @@
 import UserModel from "../database/models/users";
 
 export async function GetLocalizationByUserId(
-  user_id: number
+  user_id: number 
 ): Promise<string> {
   return await UserModel.findOne({ user_id })
     .lean()

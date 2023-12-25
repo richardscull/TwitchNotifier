@@ -13,8 +13,7 @@ export default async function UpdateStreamerQuery(
             title: "",
             game: "",
             viewers: "",
-            thumbnail_url: "",
-            started_at: "",
+            startedAt: "",
           },
           $set: {
             isOnline: false,
@@ -26,8 +25,7 @@ export default async function UpdateStreamerQuery(
             title: data.title,
             game: data.game_name,
             viewers: data.viewer_count,
-            //thumbnail_url: data.thumbnail_url,
-            started_at: new Date(data.started_at).getTime(),
+            startedAt: new Date(data.started_at).getTime(),
           },
         }
   )

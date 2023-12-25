@@ -1,6 +1,11 @@
+import TelegramBot from "node-telegram-bot-api";
 import NotificationModel from "../../database/models/notifications";
-import UserModel from "../../database/models/users";
 import Client from "../../telegram/client";
+import {
+  GetLocalizationByUserId,
+  GetLocalizationFile,
+} from "../../utils/localization";
+import { getDuration } from "../../utils/formatDuration";
 
 export default async function UpdateLiveNotification(
   isOnline: boolean,
@@ -13,29 +18,54 @@ export default async function UpdateLiveNotification(
     .exec()
     .then((notifications) => {
       notifications.forEach(async (notification) => {
+        const localizationFile = await GetLocalizationFile(
+          Number(notification.user_id)
+        );
+
+        const localization = await GetLocalizationByUserId(
+          Number(notification.user_id)
+        );
+
+        const defaultOptions = {
+          parse_mode: "Markdown" as TelegramBot.ParseMode,
+          chat_id: notification.user_id,
+          message_id: notification.message_id,
+        };
+
+        const button = {
+          text: localizationFile["embeds"]["stream_is_live"]["watch_button"],
+          url: `https://twitch.tv/${data.user_login}`,
+        };
+
         if (isOnline) {
-          const msg = await Client.editMessageText(
-            `🔴 ${data.user_name} is now live!\n\n🎮 ${data.game_name}\n\n📜 ${data.title}\n\nhttps://twitch.tv/${data.user_name}`,
-            //TODO: CHANGE TEXT AND ADD BUTTONS
+          // ! Probably need to deprecate, because we doesnt update message, only if stream is offline
+          await Client.editMessageText(
+            localizationFile["embeds"]["stream_is_live"]["text"]
+              .replace("%live_emoji%", "🔴")
+              .replace("%streamer%", data.user_login)
+              .replace("%url%", `https://twitch.tv/${data.user_login}`)
+              .replace("%title%", data.title)
+              .replace("%game%", data.game_name),
             {
-              chat_id: notification.user_id,
-              message_id: notification.message_id,
+              reply_markup: {
+                inline_keyboard: [[button]],
+              },
+              ...defaultOptions,
             }
           );
         } else {
-          const msg = await Client.editMessageText(
-            `🔴 ${
-              data.user_name
-            } has ended the stream!\n\nHe streamed for ${Math.floor(
-              (Date.now() - Number(data.started_at)) / 1000 / 60
-            )} minutes\n\nhttps://twitch.tv/${data.user_name}`,
-            {
-              chat_id: notification.user_id,
-              message_id: notification.message_id,
-            }
-          ); //TODO: CHANGE TEXT AND ADD BUTTONS
+          const streamStartedAt = (Date.now() - Number(data.started_at)) / 1000;
 
-          if (!msg) return;
+          await Client.editMessageText(
+            localizationFile["embeds"]["stream_is_offline"]["text"]
+              .replace("%streamer%", data.user_login)
+              .replace("%url%", `https://twitch.tv/${data.user_login}`)
+              .replace(
+                "%duration%",
+                getDuration(streamStartedAt, localization as any)
+              ),
+            defaultOptions
+          );
 
           NotificationModel.findOneAndDelete({
             user_id: notification.user_id,

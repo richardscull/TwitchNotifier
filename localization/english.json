@@ -28,5 +28,14 @@
       "user_not_found": "This streamer doesn't exist",
       "unfollowed": "You are no longer following this streamer"
     }
+  },
+  "embeds": {
+    "stream_is_live": {
+      "text": "🔴 [%streamer%](%url%) is now live on Twitch!\n\n📜 *Title*: %title%\n🎮 *Game*: %game%\n",
+      "watch_button": "Watch Stream"
+    },
+    "stream_is_offline": {
+      "text": "⚫ [%streamer%](%url%) has ended their stream.\n\n⌛*Duration*: %duration%"
+    }
   }
 }

@@ -1,6 +1,8 @@
 import NotificationModel from "../../database/models/notifications";
 import UserModel from "../../database/models/users";
 import Client from "../../telegram/client";
+import { GetLocalizationFile } from "../../utils/localization";
+import log from "../../utils/logger";
 
 export default async function SendLiveNotification(
   data: TwitchStreamAttributes
@@ -12,13 +14,34 @@ export default async function SendLiveNotification(
     .exec()
     .then((users) => {
       users.forEach(async (user) => {
-        const msg = await Client.sendMessage(
-          user.user_id,
-          `🔴 ${data.user_name} is now live!\n\n🎮 ${data.game_name}\n\n📜 ${data.title}\n\nhttps://twitch.tv/${data.user_name}`
-          //TODO: CHANGE TEXT AND ADD BUTTONS
+        const localizationFile = await GetLocalizationFile(
+          Number(user.user_id)
         );
 
-        if (!msg) return;
+        const button = {
+          text: localizationFile["embeds"]["stream_is_live"]["watch_button"],
+          url: `https://twitch.tv/${data.user_name}`,
+        };
+
+        const msg = await Client.sendMessage(
+          user.user_id,
+          localizationFile["embeds"]["stream_is_live"]["text"]
+            .replace("%streamer%", data.user_name)
+            .replace("%url%", `https://twitch.tv/${data.user_login}`)
+            .replace("%title%", data.title)
+            .replace("%game%", data.game_name),
+          {
+            reply_markup: {
+              inline_keyboard: [[button]],
+            },
+            parse_mode: "Markdown",
+          }
+        );
+
+        if (!msg)
+          return log(
+            `Couldn't send message to ${user.user_id}, probably blocked the bot`
+          );
 
         NotificationModel.create({
           user_id: user.user_id,

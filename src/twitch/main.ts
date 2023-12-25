@@ -1,6 +1,5 @@
 import UpdateStreamerQuery from "../database/lib/updateStreamerQuery";
 import StreamerModel from "../database/models/streamers";
-import { SendNotification } from "../telegram/events/sendNotification";
 import log from "../utils/logger";
 import isOnline from "./lib/isOnline";
 import SendLiveNotification from "./notifications/sendLiveNotification";
@@ -31,9 +30,9 @@ const updateStreamers = async () => {
                   SendLiveNotification(data);
                 } else {
                   UpdateLiveNotification(isOnline, {
-                    user_id: streamer.id.toString(),
-                    user_login: streamer.username,
-                    started_at: streamer.startedAt,
+                    user_id: oldData.id.toString(),
+                    user_login: oldData.username,
+                    started_at: oldData.startedAt,
                   } as any);
                 }
               }
