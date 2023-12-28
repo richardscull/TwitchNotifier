@@ -27,6 +27,12 @@
       "dont_follow": "You don't follow this streamer. use /follow to follow them",
       "user_not_found": "This streamer doesn't exist",
       "unfollowed": "You are no longer following this streamer"
+    },
+    "language": {
+      "choose_language": "Choose your language",
+      "success_change": "👍 Language changed to %language%!",
+      "english": "english",
+      "russian": "russian"
     }
   },
   "embeds": {
