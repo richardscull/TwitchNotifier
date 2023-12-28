@@ -5,6 +5,7 @@ export default async function UpdateStreamerQuery(
   data: TwitchStreamAttributes
 ) {
   const isDataUndefined = data === undefined;
+
   return await StreamerModel.findOneAndUpdate(
     { id: streamer_id },
     isDataUndefined
@@ -24,8 +25,10 @@ export default async function UpdateStreamerQuery(
             isOnline: true,
             title: data.title,
             game: data.game_name,
-            viewers: data.viewer_count,
             startedAt: new Date(data.started_at).getTime(),
+          },
+          $max: {
+            viewers: data.viewer_count,
           },
         }
   )

@@ -63,7 +63,8 @@ export default async function UpdateLiveNotification(
               .replace(
                 "%duration%",
                 getDuration(streamStartedAt, localization as any)
-              ),
+              )
+              .replace("%viewers%", data.viewer_count),
             defaultOptions
           );
 

@@ -35,7 +35,7 @@
       "watch_button": "Watch Stream"
     },
     "stream_is_offline": {
-      "text": "⚫ [%streamer%](%url%) has ended their stream.\n\n⌛*Duration*: %duration%"
+      "text": "⚫ [%streamer%](%url%) has ended their stream.\n\n⌛*Duration*: %duration%\n👥 *Viewers*: %viewers%\n"
     }
   }
 }

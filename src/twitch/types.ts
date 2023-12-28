@@ -40,3 +40,8 @@ interface TwitchStreamAttributes {
   tags_ids: string[];
   is_mature: boolean;
 }
+
+interface StreamStatus {
+  isOnline: boolean;
+  data: any;
+}

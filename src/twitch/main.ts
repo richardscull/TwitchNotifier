@@ -1,7 +1,7 @@
 import UpdateStreamerQuery from "../database/lib/updateStreamerQuery";
 import StreamerModel from "../database/models/streamers";
 import log from "../utils/logger";
-import isOnline from "./lib/isOnline";
+import isOnline from "./lib/getStreamStatus";
 import SendLiveNotification from "./notifications/sendLiveNotification";
 import UpdateLiveNotification from "./notifications/updateLiveNotification";
 
@@ -10,39 +10,46 @@ const updateStreamers = async () => {
     async () => {
       const streamers = await StreamerModel.find({}).lean().exec();
 
-      streamers.forEach((streamer) => {
-        isOnline({ id: streamer.id }).then((res) => {
-          if (!res)
-            return log(
-              `Couldn't get isOnline response for ${streamer.username}}`
-            );
+      // Split streamers into packs of 100 to avoid Twitch API limit
+      const PacksOf100 = streamers.reduce((acc, streamer, i) => {
+        const index = Math.floor(i / 100);
+        acc[index] = [...(acc[index] || []), streamer.id.toString()];
+        return acc;
+      }, [] as string[][]);
 
-          const { isOnline, data } = res;
-          const isStatusChanged = isOnline !== streamer.isOnline;
+      // Check who is online for each pack
+      PacksOf100.forEach((pack) => {
+        isOnline(pack).then((res) => {
+          for (const id in res as { [key: string]: StreamStatus }) {
+            const { isOnline, data } = res[id];
 
-          Promise.all([UpdateStreamerQuery(streamer.id, data)]).then(
-            ([oldData]) => {
-              if (!oldData)
-                return log("Couldn't find streamer on updateStreamers");
+            const isStatusChanged =
+              isOnline !==
+              streamers.find((s) => s.id.toString() === id)?.isOnline;
 
-              if (isStatusChanged) {
+            Promise.all([UpdateStreamerQuery(Number(id), data)]).then(
+              ([oldData]) => {
+                if (!isStatusChanged) return;
+
                 if (isOnline) {
                   SendLiveNotification(data);
                 } else {
                   UpdateLiveNotification(isOnline, {
-                    user_id: oldData.id.toString(),
-                    user_login: oldData.username,
-                    started_at: oldData.startedAt,
+                    user_id: oldData?.id.toString(),
+                    user_login: oldData?.username,
+                    started_at: oldData?.startedAt,
+                    viewer_count: oldData?.viewers,
                   } as any);
                 }
               }
-            }
-          );
+            );
+          }
         });
       });
+
       log("Checks who is online...");
     },
-    //1000 * 60 // 1 minute
+    /// 1000 * 60 // 1 minute
     1000 * 5 // 5 seconds FOR TESTING
   );
 };
