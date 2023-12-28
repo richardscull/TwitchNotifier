@@ -50,35 +50,45 @@ export class TelegramClient extends TelegramBot {
     });
 
     // Handle invalid commands
-    this.on("message", (msg) => {
+    this.on("message", async (msg) => {
       if (!msg.text?.startsWith("/")) return;
+
       handleInvalidCommand({ msg, userId: msg.from?.id!, ctx: this });
     });
 
     // Handle callback queries
     this.on("callback_query", (query) => {
-      this.answerCallbackQuery(query.id).then(async () => {
-        if (!query.data) return log("Callback data is not set!");
-        const command = query.data.split(":")[0];
-        const callback = query.data.split(":")[1];
-        const callbackFile = require(path.join(commandsDir, command));
+      try {
+        this.answerCallbackQuery(query.id).then(async () => {
+          if (!query.data) return log("Callback data is not set!");
+          const command = query.data.split(":")[0];
+          const callback = query.data.split(":")[1];
+          const callbackAttr = JSON.parse(
+            query.data.split(":").slice(2).join(":") || "{}"
+          );
 
-        const attr: Attributes = {
-          msg: query.message!,
-          userId: query.from.id,
-          ctx: this,
-        };
+          if (command === "disabled") return; // * Disabled button callback
+          const callbackFile = require(path.join(commandsDir, command));
 
-        const localizationFile = (await GetLocalizationFile(
-          attr.userId
-        )) as any;
+          const attr: Attributes = {
+            msg: query.message!,
+            userId: query.from.id,
+            ctx: this,
+          };
 
-        const logText = `📨 -  "${query.from.first_name}" (${query.from.id}) sent callback: ${command}:${callback}`;
-        log(logText);
+          const localizationFile = (await GetLocalizationFile(
+            attr.userId
+          )) as any;
 
-        // Execute the callback
-        callbackFile[callback](attr, localizationFile);
-      });
+          const logText = `📨 -  "${query.from.first_name}" (${query.from.id}) sent callback: ${query.data}`;
+          log(logText);
+
+          // Execute the callback
+          callbackFile[callback](attr, localizationFile, callbackAttr);
+        });
+      } catch (err: any) {
+        log(err);
+      }
     });
   }
 
@@ -116,12 +126,16 @@ export class TelegramClient extends TelegramBot {
   }
 
   public EditMessage(msg: Message, text: string, options?: any) {
-    this.editMessageText(text, {
-      chat_id: msg.chat.id,
-      parse_mode: "Markdown",
-      message_id: msg.message_id,
-      ...options,
-    });
+    try {
+      this.editMessageText(text, {
+        chat_id: msg.chat.id,
+        parse_mode: "Markdown",
+        message_id: msg.message_id,
+        ...options,
+      });
+    } catch (err: any) {
+      log(err);
+    }
   }
 
   public LinkButtons(commandName: string, options?: KeyboardButton[]) {
@@ -148,8 +162,8 @@ async function handleSlashCommand(attr: Attributes, command: any) {
   const { msg, userId, ctx } = attr;
 
   // Check if user exists in the database
-  await IsUserExist(userId).then(async (isExist: boolean) => {
-    if (!isExist) return await createUserQuery(userId);
+  await IsUserExist(msg.chat.id).then(async (isExist: boolean) => {
+    if (!isExist) return await createUserQuery(msg.chat.id);
   });
 
   // Get localization file
@@ -177,8 +191,8 @@ async function handleInvalidCommand(attr: Attributes) {
   if (!msg.text) return;
 
   // Check if user exists in the database
-  await IsUserExist(userId).then(async (isExist: boolean) => {
-    if (!isExist) return await createUserQuery(userId);
+  await IsUserExist(msg.chat.id).then(async (isExist: boolean) => {
+    if (!isExist) return await createUserQuery(msg.chat.id);
   });
 
   const localizationFile = (await GetLocalizationFile(attr.userId)) as any;

@@ -1,3 +1,4 @@
+import log from "../../utils/logger";
 import { TelegramClient } from "../client";
 
 export function SendNotification(
@@ -5,5 +6,7 @@ export function SendNotification(
   message: string,
   ctx: TelegramClient
 ) {
-  ctx.sendMessage(user_id, message);
+  ctx.sendMessage(user_id, message).catch((err) => {
+    log(err);
+  });
 }

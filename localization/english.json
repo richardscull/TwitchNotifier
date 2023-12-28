@@ -33,6 +33,11 @@
       "success_change": "👍 Language changed to %language%!",
       "english": "english",
       "russian": "russian"
+    },
+    "following": {
+      "following": "Following",
+      "no_following": "You are not following any streamers",
+      "followed_list": "*You are following %count% streamers*\n📃 Browse followed streamers (*%cpage%/%tpages%*)\n\n%list%\n_Use `/unfollow [nickname]` to unfollow a streamer_"
     }
   },
   "embeds": {

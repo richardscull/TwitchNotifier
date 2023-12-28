@@ -3,6 +3,7 @@ import UserModel from "../../database/models/users";
 import Client from "../../telegram/client";
 import { GetLocalizationFile } from "../../utils/localization";
 import log from "../../utils/logger";
+import Sanitize from "../../utils/sanitizeMarkdown";
 
 export default async function SendLiveNotification(
   data: TwitchStreamAttributes
@@ -26,17 +27,19 @@ export default async function SendLiveNotification(
         const msg = await Client.sendMessage(
           user.user_id,
           localizationFile["embeds"]["stream_is_live"]["text"]
-            .replace("%streamer%", data.user_name)
+            .replace("%streamer%", Sanitize(data.user_name))
             .replace("%url%", `https://twitch.tv/${data.user_login}`)
-            .replace("%title%", data.title)
-            .replace("%game%", data.game_name),
+            .replace("%title%", Sanitize(data.title))
+            .replace("%game%", Sanitize(data.game_name)),
           {
             reply_markup: {
               inline_keyboard: [[button]],
             },
             parse_mode: "Markdown",
           }
-        );
+        ).catch((err) => {
+          log(err);
+        });
 
         if (!msg)
           return log(

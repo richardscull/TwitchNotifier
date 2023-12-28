@@ -6,6 +6,7 @@ import {
   GetLocalizationFile,
 } from "../../utils/localization";
 import { getDuration } from "../../utils/formatDuration";
+import Sanitize from "../../utils/sanitizeMarkdown";
 
 export default async function UpdateLiveNotification(
   isOnline: boolean,
@@ -42,10 +43,10 @@ export default async function UpdateLiveNotification(
           await Client.editMessageText(
             localizationFile["embeds"]["stream_is_live"]["text"]
               .replace("%live_emoji%", "🔴")
-              .replace("%streamer%", data.user_login)
+              .replace("%streamer%", Sanitize(data.user_login))
               .replace("%url%", `https://twitch.tv/${data.user_login}`)
-              .replace("%title%", data.title)
-              .replace("%game%", data.game_name),
+              .replace("%title%", Sanitize(data.title))
+              .replace("%game%", Sanitize(data.game_name)),
             {
               reply_markup: {
                 inline_keyboard: [[button]],
@@ -58,7 +59,7 @@ export default async function UpdateLiveNotification(
 
           await Client.editMessageText(
             localizationFile["embeds"]["stream_is_offline"]["text"]
-              .replace("%streamer%", data.user_login)
+              .replace("%streamer%", Sanitize(data.user_login))
               .replace("%url%", `https://twitch.tv/${data.user_login}`)
               .replace(
                 "%duration%",
