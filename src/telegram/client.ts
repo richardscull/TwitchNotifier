@@ -163,9 +163,8 @@ async function handleSlashCommand(attr: Attributes, command: any) {
   const { msg, userId, ctx } = attr;
 
   // Check if user exists in the database
-  await IsUserExist(msg.chat.id).then(async (isExist: boolean) => {
-    if (!isExist) return await createUserQuery(msg.chat.id);
-  });
+  const isExist = await IsUserExist(msg.chat.id);
+  if (!isExist) await createUserQuery(msg.chat.id);
 
   // Get localization file
   const localizationFile = (await GetLocalizationFile(userId)) as any;
@@ -188,13 +187,12 @@ async function handleSlashCommand(attr: Attributes, command: any) {
 }
 
 async function handleInvalidCommand(attr: Attributes) {
-  const { msg, userId, ctx } = attr;
+  const { msg, ctx } = attr;
   if (!msg.text) return;
 
   // Check if user exists in the database
-  await IsUserExist(msg.chat.id).then(async (isExist: boolean) => {
-    if (!isExist) return await createUserQuery(msg.chat.id);
-  });
+  const isExist = await IsUserExist(msg.chat.id);
+  if (!isExist) await createUserQuery(msg.chat.id);
 
   const localizationFile = (await GetLocalizationFile(attr.userId)) as any;
 

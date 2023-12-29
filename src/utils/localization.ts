@@ -1,20 +1,16 @@
 import UserModel from "../database/models/users";
+import log from "./logger";
 
 export async function GetLocalizationByUserId(
-  user_id: number 
+  user_id: number
 ): Promise<string> {
+  log("🔎 Finding user by user_id: " + user_id);
   return await UserModel.findOne({ user_id })
     .lean()
     .exec()
-    .then(
-      (user) => {
-        if (!user) throw new Error("🚨 User not found");
-        return user.localization || "english";
-      },
-      (err) => {
-        throw new Error("🚨 Error finding user: " + err);
-      }
-    );
+    .then((user) => {
+      return user?.localization || "english";
+    });
 }
 
 export async function GetLocalizationFile(user_id: number): Promise<any> {
