@@ -1,4 +1,4 @@
-import { Attributes, TelegramClient } from "../client";
+import { Attributes } from "../client";
 import IsTwitchTokenValid from "../../database/lib/isTwitchTokenValid";
 import CreateLoginRequest from "../../database/lib/createLoginRequest";
 import log from "../../utils/logger";
@@ -7,7 +7,7 @@ import { BRANCH } from "../..";
 const { HOST_URI } = process.env;
 
 module.exports = {
-  regex: /login/,
+  regex: /^\/login$/,
   requireToken: false,
   async execute(attr: Attributes, localizationFile: any) {
     const { ctx, msg, userId } = attr;

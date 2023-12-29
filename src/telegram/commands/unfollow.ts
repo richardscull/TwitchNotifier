@@ -1,11 +1,11 @@
-import { Attributes, TelegramClient } from "../client";
+import { Attributes } from "../client";
 import UserModel from "../../database/models/users";
 import log from "../../utils/logger";
 import StreamerModel from "../../database/models/streamers";
 import getUser from "../../twitch/lib/getUser";
 
 module.exports = {
-  regex: /^\/unfollow (.+)/,
+  regex: /^\/unfollow (.+)$/,
   requireToken: false,
   async execute(attr: Attributes, localizationFile: any) {
     const { ctx, msg, userId, match } = attr;
@@ -15,7 +15,7 @@ module.exports = {
     const user = await UserModel.findOne({ user_id: userId }).lean().exec();
     if (!user) return log("Couldn't find user on /unfollow");
 
-    const twitchUser = await getUser(match[1]);
+    const twitchUser = await getUser({ username: match[1] });
     if (!twitchUser)
       return ctx.Reply(msg, {
         text: localizationFile["commands"]["follow"]["user_not_found"],

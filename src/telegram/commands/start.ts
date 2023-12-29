@@ -1,7 +1,7 @@
 import { Attributes } from "../client";
 
 module.exports = {
-  regex: /start/,
+  regex: /^\/start$/,
   requireToken: false,
   execute(attr: Attributes, localizationFile: any) {
     const { ctx, msg } = attr;

@@ -2,20 +2,12 @@ import axios from "axios";
 import getAppToken from "./getAppToken";
 import log from "../../utils/logger";
 
-export default async function getUser({
-  username,
-  userToken,
-}: {
-  username?: string;
-  userToken?: string;
-}) {
-  const token = userToken || (await getAppToken());
+export default async function getFollowers(streamerId: string) {
+  const token = await getAppToken();
 
   return await axios
     .get(
-      `https://api.twitch.tv/helix/users${
-        (username && `?login=${username}`) || ""
-      }`,
+      `https://api.twitch.tv/helix/channels/followers?broadcaster_id=${streamerId}`,
       {
         headers: {
           "Client-ID": process.env.TWITCH_CLIENT_ID,
@@ -25,7 +17,7 @@ export default async function getUser({
       }
     )
     .then((res) => {
-      return res.data.data[0] as TwitchUserAttributes;
+      return res.data.total;
     })
     .catch((err) => {
       log(err);

@@ -4,58 +4,8 @@ import log from "../../utils/logger";
 import StreamerModel from "../../database/models/streamers";
 import Sanitize from "../../utils/sanitizeMarkdown";
 
-function getStreamersPages(streamers: string[]) {
-  const pages = streamers.reduce((acc, streamer, i) => {
-    const index = Math.floor(i / 10);
-    acc[index] = [...(acc[index] || []), streamer];
-    return acc;
-  }, [] as string[][]);
-
-  return pages;
-}
-
-async function getStreamerPage(streamers: string[][], page: number) {
-  let text = "";
-
-  if (!streamers[page - 1]) return text;
-  for (const [i, streamerId] of streamers[page - 1].entries()) {
-    const streamer = await StreamerModel.findOne({ id: streamerId })
-      .lean()
-      .exec();
-
-    text += `*${i + 1 + (page - 1) * 10}.* ${Sanitize(
-      streamer?.username || ""
-    )}\n`;
-  }
-  return text || "No streamers found";
-}
-
-function getButtons(page: number, pages: number) {
-  const buttons = [];
-  if (page > 1) {
-    buttons.push({
-      text: `« ${page - 1}`,
-      callback_data: `following:page:{"page":${page - 1}}`,
-    });
-  }
-
-  buttons.push({
-    text: `·${page}·`,
-    callback_data: `disabled`,
-  });
-
-  if (page < pages) {
-    buttons.push({
-      text: `${page + 1} »`,
-      callback_data: `following:page:{"page":${page + 1}}`,
-    });
-  }
-
-  return buttons;
-}
-
 module.exports = {
-  regex: /following/,
+  regex: /^\/following$/,
   requireToken: false,
   async execute(attr: Attributes, localizationFile: any) {
     const { ctx, msg, userId } = attr;
@@ -119,3 +69,53 @@ module.exports.page = async (
     }
   );
 };
+
+function getStreamersPages(streamers: string[]) {
+  const pages = streamers.reduce((acc, streamer, i) => {
+    const index = Math.floor(i / 10);
+    acc[index] = [...(acc[index] || []), streamer];
+    return acc;
+  }, [] as string[][]);
+
+  return pages;
+}
+
+async function getStreamerPage(streamers: string[][], page: number) {
+  let text = "";
+
+  if (!streamers[page - 1]) return text;
+  for (const [i, streamerId] of streamers[page - 1].entries()) {
+    const streamer = await StreamerModel.findOne({ id: streamerId })
+      .lean()
+      .exec();
+
+    text += `*${i + 1 + (page - 1) * 10}.* ${Sanitize(
+      streamer?.username || ""
+    )}\n`;
+  }
+  return text || "No streamers found";
+}
+
+function getButtons(page: number, pages: number) {
+  const buttons = [];
+  if (page > 1) {
+    buttons.push({
+      text: `« ${page - 1}`,
+      callback_data: `following:page:{"page":${page - 1}}`,
+    });
+  }
+
+  buttons.push({
+    text: `·${page}·`,
+    callback_data: `disabled`,
+  });
+
+  if (page < pages) {
+    buttons.push({
+      text: `${page + 1} »`,
+      callback_data: `following:page:{"page":${page + 1}}`,
+    });
+  }
+
+  return buttons;
+}

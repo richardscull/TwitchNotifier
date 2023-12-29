@@ -49,7 +49,7 @@ const updateStreamers = async () => {
 
       log("Checks who is online...");
     },
-    1000 * 60 // 1 minute
+    1000 * 5 // 1 minute
   );
 };
 

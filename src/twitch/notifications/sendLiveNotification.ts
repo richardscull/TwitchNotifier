@@ -27,10 +27,16 @@ export default async function SendLiveNotification(
         const msg = await Client.sendMessage(
           user.user_id,
           localizationFile["embeds"]["stream_is_live"]["text"]
-            .replace("%streamer%", Sanitize(data.user_name))
+            .replace("%streamer%", data.user_name)
             .replace("%url%", `https://twitch.tv/${data.user_login}`)
-            .replace("%title%", Sanitize(data.title))
-            .replace("%game%", Sanitize(data.game_name)),
+            .replace(
+              "%title%",
+              Sanitize(data.title) || `_${localizationFile["undefined"]}_`
+            )
+            .replace(
+              "%game%",
+              Sanitize(data.game_name) || `_${localizationFile["undefined"]}_`
+            ),
           {
             reply_markup: {
               inline_keyboard: [[button]],

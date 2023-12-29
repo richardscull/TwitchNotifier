@@ -7,7 +7,7 @@ import isOnline from "../../twitch/lib/getStreamStatus";
 import Sanitize from "../../utils/sanitizeMarkdown";
 
 module.exports = {
-  regex: /^\/follow (.+)/,
+  regex: /^\/follow (.+)$/,
   requireToken: false,
   async execute(attr: Attributes, localizationFile: any) {
     const { ctx, msg, userId, match } = attr;
@@ -17,7 +17,7 @@ module.exports = {
     const user = await UserModel.findOne({ user_id: userId }).lean().exec();
     if (!user) return log("Couldn't find user on /follow");
 
-    const twitchUser = await getUser(match[1]);
+    const twitchUser = await getUser({ username: match[1] });
     if (!twitchUser)
       return ctx.Reply(msg, {
         text: localizationFile["commands"]["follow"]["user_not_found"],
@@ -65,7 +65,7 @@ module.exports = {
 
     return ctx.Reply(msg, {
       text: localizationFile["commands"]["follow"]["followed"]
-        .replace("%streamer%", Sanitize(twitchUser.login))
+        .replace("%streamer%", twitchUser.login)
         .replace("%url%", `https://www.twitch.tv/${twitchUser.login}`),
     });
   },

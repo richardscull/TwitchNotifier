@@ -38,6 +38,10 @@
       "following": "Following",
       "no_following": "You are not following any streamers",
       "followed_list": "*You are following %count% streamers*\n📃 Browse followed streamers (*%cpage%/%tpages%*)\n\n%list%\n_Use `/unfollow [nickname]` to unfollow a streamer_"
+    },
+    "profile": {
+      "profile": "Profile of *%username%*\n\n*Description:* %description%\n*ID:* `%id%`\n*Created:* %created%\n*Status:* %status%\n*Followers:* %followers%",
+      "user_not_found": "This user doesn't exist"
     }
   },
   "embeds": {
@@ -48,5 +52,6 @@
     "stream_is_offline": {
       "text": "⚫ [%streamer%](%url%) has ended their stream.\n\n⌛*Duration*: %duration%\n👥 *Viewers*: %viewers%\n"
     }
-  }
+  },
+  "undefined": "undefined"
 }

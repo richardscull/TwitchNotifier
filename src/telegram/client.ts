@@ -103,7 +103,7 @@ export class TelegramClient extends TelegramBot {
 
     try {
       if (image) {
-        if (typeof image === "string") {
+        if (typeof image === "string" && !image.startsWith("http")) {
           if (!fs.existsSync(image))
             return log("invalid image passed for Reply");
           image = fs.createReadStream(image);

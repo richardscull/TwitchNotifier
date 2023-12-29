@@ -1,9 +1,9 @@
-import { Attributes, TelegramClient } from "../client";
+import { Attributes } from "../client";
 import { IsHasTwitchToken } from "../../database/lib/isTwitchTokenValid";
 import UserModel from "../../database/models/users";
 
 module.exports = {
-  regex: /logout/,
+  regex: /^\/logout$/,
   requireToken: false,
   async execute(attr: Attributes, localizationFile: any) {
     const { ctx, msg, userId } = attr;

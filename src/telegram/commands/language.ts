@@ -1,10 +1,9 @@
-import { Attributes, TelegramClient } from "../client";
-import { IsHasTwitchToken } from "../../database/lib/isTwitchTokenValid";
+import { Attributes } from "../client";
 import UserModel from "../../database/models/users";
 import CapitalizeString from "../../utils/capitalizeString";
 
 module.exports = {
-  regex: /language/,
+  regex: /^\/language$/,
   requireToken: false,
   async execute(attr: Attributes, localizationFile: any) {
     const { ctx, msg, userId } = attr;
