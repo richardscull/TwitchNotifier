@@ -14,9 +14,9 @@ module.exports = {
 
     if (!match || !match[1]) return log("Couldn't find match on /profile");
 
-    const user = await getUser({
-      username: match[1],
-    });
+    const user = await getUser([{ username: match[1] }]).then(
+      (res) => res[0].data
+    );
 
     if (!user)
       return ctx.Reply(msg, {

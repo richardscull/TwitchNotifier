@@ -21,9 +21,9 @@ module.exports = {
     if (!userModel?.token?.access_token)
       return log("Couldn't find acess_token for /profile");
 
-    const user = await getUser({
-      userToken: Decrypt(userModel.token.access_token),
-    });
+    const user = await getUser([], Decrypt(userModel.token.access_token)).then(
+      (res) => res[0].data
+    );
 
     if (!user) return log("couldn't get user in /profile");
     const followers = await getFollowers(user.id);
