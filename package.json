@@ -21,7 +21,6 @@
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "fastify": "^4.25.1",
-    "jsoning": "^0.13.23",
     "mongoose": "^8.0.3",
     "node-telegram-bot-api": "^0.61.0"
   },
