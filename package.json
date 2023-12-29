@@ -7,7 +7,7 @@
     "build": "npm run clearAndCopy && tsc && echo 🛫 Successfully builded an app!\n",
     "start": "node build/index.js",
     "buildRun": "npm run build && npm run start",
-    "clearAndCopy": "rimraf build/server && copyfiles -e src/server/*.ts -u 1 src/server/** build/"
+    "clearAndCopy": "rimraf build/server && copyfiles -e src/server/*.ts -u 1 src/server/static/** build/server/static/"
   },
   "author": "richardscull",
   "license": "ISC",
