@@ -42,6 +42,11 @@
     "profile": {
       "profile": "Profile of *%username%*\n\n*Description:* %description%\n*ID:* `%id%`\n*Created:* %created%\n*Status:* %status%\n*Followers:* %followers%",
       "user_not_found": "This user doesn't exist"
+    },
+    "github": {
+      "text": "Hello! I'am a *richardscull*, creator of this bot.\nIf you like this bot, please consider to star bot's repository on GitHub. I would really appreciate it!\n\n_Thanks in advance! ❤️_",
+      "repository": "GitHub Repository",
+      "github_link": "https://github.com/richardscull/TwitchNotifier"
     }
   },
   "embeds": {
