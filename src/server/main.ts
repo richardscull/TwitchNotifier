@@ -6,7 +6,7 @@ import { Decrypt, Encrypt } from "../utils/crypterTools";
 import { SendNotification } from "../telegram/events/sendNotification";
 import Client from "../telegram/client";
 import { GetLocalizationFile } from "../utils/localization";
-const { TWITCH_CLIENT_ID, TWITCH_CLIENT_TOKEN, PORT } = process.env;
+const { TWITCH_CLIENT_ID, TWITCH_CLIENT_TOKEN, PORT, HOST_URI } = process.env;
 
 (async () => {
   const app = require("fastify")();
@@ -23,7 +23,7 @@ const { TWITCH_CLIENT_ID, TWITCH_CLIENT_TOKEN, PORT } = process.env;
     return res.redirect(
       "https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=" +
         TWITCH_CLIENT_ID +
-        "&redirect_uri=http://localhost:3001/auth/twitch/callback&scope=user:read:follows&state=" +
+        `&redirect_uri=${HOST_URI}/auth/twitch/callback&scope=user:read:follows&state=` +
         req.query.state
     );
   });
@@ -41,7 +41,7 @@ const { TWITCH_CLIENT_ID, TWITCH_CLIENT_TOKEN, PORT } = process.env;
           client_id: TWITCH_CLIENT_ID,
           client_secret: TWITCH_CLIENT_TOKEN,
           grant_type: "authorization_code",
-          redirect_uri: "http://localhost:3001/auth/twitch/callback",
+          redirect_uri: `http://${HOST_URI}/auth/twitch/callback`,
           code: req.query.code,
         },
         {

@@ -35,7 +35,7 @@ module.exports = {
         options: {
           reply_markup:
             (BRANCH == "PROD" && { inline_keyboard: [[button]] }) || undefined,
-          includelocalhost: true,
+          includelocalhost: true, // ! Maybe should be removed
         },
       });
     } else {
