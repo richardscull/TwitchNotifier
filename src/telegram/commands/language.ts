@@ -48,13 +48,12 @@ module.exports.english = (attr: Attributes, _: any) => {
 
   const localizationFile = require(`../../../localization/english.json`);
 
-  ctx.EditMessage(
-    msg,
-    localizationFile["commands"]["language"]["success_change"].replace(
+  ctx.EditMessage(msg, {
+    text: localizationFile["commands"]["language"]["success_change"].replace(
       "%language%",
       localizationFile["commands"]["language"]["english"]
-    )
-  );
+    ),
+  });
 };
 
 module.exports.russian = (attr: Attributes, _: any) => {
@@ -71,11 +70,10 @@ module.exports.russian = (attr: Attributes, _: any) => {
 
   const localizationFile = require(`../../../localization/russian.json`);
 
-  ctx.EditMessage(
-    msg,
-    localizationFile["commands"]["language"]["success_change"].replace(
+  ctx.EditMessage(msg, {
+    text: localizationFile["commands"]["language"]["success_change"].replace(
       "%language%",
       localizationFile["commands"]["language"]["russian"]
-    )
-  );
+    ),
+  });
 };

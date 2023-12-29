@@ -10,6 +10,7 @@ interface UserAttributes {
 }
 
 interface HashedToken {
+  user_id: string;
   access_token: string;
   refresh_token: string;
   expires_at: number;
@@ -25,6 +26,7 @@ const schema = new Schema<UserAttributes>(
     user_id: { type: String, required: true },
     token: {
       type: {
+        user_id: String,
         access_token: String,
         refresh_token: String,
         expires_at: Number,

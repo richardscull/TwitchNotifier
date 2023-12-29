@@ -3,28 +3,26 @@ import { model, Schema } from "mongoose";
 interface StreamerAttributes {
   id: number;
   username: string;
+  displayName: string;
   followers: number;
   game?: string;
   title?: string;
   isOnline?: boolean;
   startedAt?: number;
   viewers?: number;
-  backgroundImage?: string;
-  profileImage?: string;
 }
 
 const schema = new Schema<StreamerAttributes>(
   {
     id: { type: Number, required: true },
     username: { type: String, required: true },
+    displayName: { type: String, required: true },
     followers: { type: Number, required: true },
     game: { type: String, required: false },
     title: { type: String, required: false },
     isOnline: { type: Boolean, required: false },
     startedAt: { type: Number, required: false },
     viewers: { type: Number, required: false },
-    backgroundImage: { type: String, required: false },
-    profileImage: { type: String, required: false },
   },
   { versionKey: false }
 );

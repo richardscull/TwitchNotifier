@@ -19,7 +19,7 @@ module.exports = {
         callback_data: "confirm",
       },
       {
-        text: `❌ ${localizationFile["commands"]["logout"]["changed_mind"]}`,
+        text: `❌ ${localizationFile["changed_mind"]}`,
         callback_data: "cancel",
       },
     ];
@@ -47,11 +47,15 @@ module.exports.confirm = (attr: Attributes, localizationFile: any) => {
     .lean()
     .exec();
 
-  ctx.EditMessage(msg, localizationFile["commands"]["logout"]["logged_out"]);
+  ctx.EditMessage(msg, {
+    text: localizationFile["commands"]["logout"]["logged_out"],
+  });
 };
 
 module.exports.cancel = (attr: Attributes, localizationFile: any) => {
   const { ctx, msg } = attr;
 
-  ctx.EditMessage(msg, localizationFile["commands"]["logout"]["cancelled"]);
+  ctx.EditMessage(msg, {
+    text: localizationFile["commands"]["logout"]["cancelled"],
+  });
 };

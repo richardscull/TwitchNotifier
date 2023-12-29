@@ -42,9 +42,7 @@ module.exports = {
       {
         $setOnInsert: {
           username: twitchUser.login,
-          backgroundImage: twitchUser.profile_image_url,
-          profileImage: twitchUser.offline_image_url,
-
+          displayName: twitchUser.display_name,
           isOnline: await isOnline([twitchUser.id]).then((res) => {
             const { isOnline } = res[twitchUser.id];
             return isOnline;
@@ -57,15 +55,9 @@ module.exports = {
       .lean()
       .exec();
 
-    // const streamerPicture = await getStreamerPicture({
-    //   nickname: twitchUser.login,
-    //   profileImage: twitchUser.profile_image_url,
-    //   backgroundImage: twitchUser.offline_image_url,
-    // });
-
     return ctx.Reply(msg, {
       text: localizationFile["commands"]["follow"]["followed"]
-        .replace("%streamer%", twitchUser.login)
+        .replace("%streamer%", twitchUser.display_name)
         .replace("%url%", `https://www.twitch.tv/${twitchUser.login}`),
     });
   },

@@ -26,6 +26,9 @@ export default async function UpdateStreamerQuery(
             title: data.title,
             game: data.game_name,
             startedAt: new Date(data.started_at).getTime(),
+            // Keep username and displayName up to date
+            username: data.user_login,
+            displayName: data.user_name,
           },
           $max: {
             viewers: data.viewer_count,

@@ -101,40 +101,41 @@ export class TelegramClient extends TelegramBot {
       ...options,
     };
 
-    try {
-      if (image) {
-        if (typeof image === "string" && !image.startsWith("http")) {
-          if (!fs.existsSync(image))
-            return log("invalid image passed for Reply");
-          image = fs.createReadStream(image);
-        }
-
-        return this.sendPhoto(msg.chat.id, image, {
-          caption: text,
-          ...params,
-        });
-      } else if (text) {
-        return this.sendMessage(msg.chat.id, text, {
-          ...params,
-        });
-      } else {
-        log(`🚨 No text or image provided for ${msg.text}`);
+    if (image) {
+      if (typeof image === "string" && !image.startsWith("http")) {
+        if (!fs.existsSync(image)) return log("invalid image passed for Reply");
+        image = fs.createReadStream(image);
       }
-    } catch (err: any) {
-      log(err);
+
+      return this.sendPhoto(msg.chat.id, image, {
+        caption: text,
+        ...params,
+      }).catch((err) => log(err));
+    } else if (text) {
+      return this.sendMessage(msg.chat.id, text, {
+        ...params,
+      }).catch((err) => log(err));
+    } else {
+      log(`🚨 No text or image provided for ${msg.text}`);
     }
   }
 
-  public EditMessage(msg: Message, text: string, options?: any) {
-    try {
-      this.editMessageText(text, {
-        chat_id: msg.chat.id,
-        parse_mode: "Markdown",
-        message_id: msg.message_id,
-        ...options,
-      });
-    } catch (err: any) {
-      log(err);
+  public EditMessage(msg: Message, replyOptions: ReplyOptions) {
+    let { text, options } = replyOptions;
+
+    const params = {
+      chat_id: msg.chat.id,
+      message_id: msg.message_id,
+      parse_mode: "Markdown",
+      ...options,
+    };
+
+    if (text) {
+      return this.editMessageText(text, {
+        ...params,
+      }).catch((err) => log(err));
+    } else {
+      log(`🚨 No text provided for ${msg.text}`);
     }
   }
 

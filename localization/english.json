@@ -15,7 +15,6 @@
     },
     "logout": {
       "logout": "Logout",
-      "changed_mind": "I changed my mind...",
       "are_you_sure": "Are you sure you want to logout?",
       "logged_out": "😭 You are now logged out!",
       "cancelled": "👍 Logout cancelled!",
@@ -47,6 +46,15 @@
       "text": "Hello! I'am a *richardscull*, creator of this bot.\nIf you like this bot, please consider to star bot's repository on GitHub. I would really appreciate it!\n\n_Thanks in advance! ❤️_",
       "repository": "GitHub Repository",
       "github_link": "https://github.com/richardscull/TwitchNotifier"
+    },
+    "import": {
+      "import": "Import",
+      "importing": "🔄 Importing your followed streamers from Twitch...\n\n_This process can take a while, please be patient._",
+      "import_confirm": "Are you sure you want to import **%count%** followed streamers from Twitch? It will add this streamers to your followed list:\n\n%list%",
+      "imported": "🎉 You have successfully imported followed streamers from Twitch!",
+      "no_new_followed": "👀 You already following all streamers from Twitch!",
+      "no_followed": "😭 You don't follow any streamers on Twitch!",
+      "cancelled": "👍 Import cancelled!"
     }
   },
   "embeds": {
@@ -58,5 +66,6 @@
       "text": "⚫ [%streamer%](%url%) has ended their stream.\n\n⌛*Duration*: %duration%\n👥 *Viewers*: %viewers%\n"
     }
   },
-  "undefined": "undefined"
+  "undefined": "undefined",
+  "changed_mind": "I changed my mind..."
 }

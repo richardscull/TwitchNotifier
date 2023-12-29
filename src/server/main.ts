@@ -72,11 +72,19 @@ const { TWITCH_CLIENT_ID, TWITCH_CLIENT_TOKEN, PORT } = process.env;
         .status(400)
         .send({ error: "Bad request: Error validating token" });
 
+    const profile = await axios.get("https://api.twitch.tv/helix/users", {
+      headers: {
+        "Client-ID": TWITCH_CLIENT_ID,
+        Authorization: `Bearer ${tokenData.access_token}`,
+      },
+    });
+
     return UserModel.findOneAndUpdate(
       { "login_request.state": req.query.state },
       {
         $set: {
           token: {
+            user_id: profile.data.data[0].id,
             access_token: Encrypt(tokenData.access_token),
             refresh_token: Encrypt(tokenData.refresh_token),
             expires_at: new Date().getTime() + tokenData.expires_in * 1000,

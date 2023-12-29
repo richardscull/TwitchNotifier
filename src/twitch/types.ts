@@ -45,3 +45,10 @@ interface StreamStatus {
   isOnline: boolean;
   data: any;
 }
+
+interface TwitchFollowedStreamer {
+  broadcaster_id: string;
+  broadcaster_name: string;
+  broadcaster_login: string;
+  followed_at: string;
+}

@@ -55,19 +55,18 @@ module.exports.page = async (
   const streamers = getStreamersPages(user.streamers || []);
   const text = await getStreamerPage(streamers, page);
 
-  ctx.EditMessage(
-    msg,
-    localizationFile["commands"]["following"]["followed_list"]
+  ctx.EditMessage(msg, {
+    text: localizationFile["commands"]["following"]["followed_list"]
       .replace("%count%", user.streamers.length.toString())
       .replace("%cpage%", page)
       .replace("%tpages%", streamers.length.toString())
       .replace("%list%", text),
-    {
+    options: {
       reply_markup: {
         inline_keyboard: [getButtons(page, streamers.length)],
       },
-    }
-  );
+    },
+  });
 };
 
 function getStreamersPages(streamers: string[]) {
@@ -90,7 +89,7 @@ async function getStreamerPage(streamers: string[][], page: number) {
       .exec();
 
     text += `*${i + 1 + (page - 1) * 10}.* ${Sanitize(
-      streamer?.username || ""
+      streamer?.displayName || ""
     )}\n`;
   }
   return text || "No streamers found";
