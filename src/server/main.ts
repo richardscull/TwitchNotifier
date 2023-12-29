@@ -41,7 +41,7 @@ const { TWITCH_CLIENT_ID, TWITCH_CLIENT_TOKEN, PORT, HOST_URI } = process.env;
           client_id: TWITCH_CLIENT_ID,
           client_secret: TWITCH_CLIENT_TOKEN,
           grant_type: "authorization_code",
-          redirect_uri: `http://${HOST_URI}/auth/twitch/callback`,
+          redirect_uri: `${HOST_URI}/auth/twitch/callback`,
           code: req.query.code,
         },
         {
