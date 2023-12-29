@@ -5,16 +5,14 @@
   "main": "index.js",
   "scripts": {
     "build": "npm run clearAndCopy && tsc && echo 🛫 Successfully builded an app!\n",
-    "nodemon": "nodemon --exec \"npm run buildrun\" --watch \"src\"",
-    "buildrun": "npm run build && node build/index.js",
+    "start": "node build/index.js",
+    "buildRun": "npm run build && npm run start",
     "clearAndCopy": "rimraf build/server && copyfiles -e src/server/*.ts -u 1 src/server/** build/"
   },
   "author": "richardscull",
   "license": "ISC",
   "dependencies": {
     "@fastify/static": "^6.12.0",
-    "@img/sharp-win32-x64": "^0.33.1",
-    "@napi-rs/canvas": "^0.1.44",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "axios": "^1.6.2",
     "bcrypt": "^5.1.1",
@@ -25,9 +23,7 @@
     "fastify": "^4.25.1",
     "jsoning": "^0.13.23",
     "mongoose": "^8.0.3",
-    "node-telegram-bot-api": "^0.61.0",
-    "nodemon": "^2.0.22",
-    "sharp": "^0.33.1"
+    "node-telegram-bot-api": "^0.61.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.4",

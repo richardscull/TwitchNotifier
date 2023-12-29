@@ -4,6 +4,7 @@ import log from "../../utils/logger";
 import StreamerModel from "../../database/models/streamers";
 import getUser from "../../twitch/lib/getUser";
 import isOnline from "../../twitch/lib/getStreamStatus";
+import Sanitize from "../../utils/sanitizeMarkdown";
 
 module.exports = {
   regex: /^\/follow (.+)/,
@@ -64,7 +65,7 @@ module.exports = {
 
     return ctx.Reply(msg, {
       text: localizationFile["commands"]["follow"]["followed"]
-        .replace("%streamer%", twitchUser.login)
+        .replace("%streamer%", Sanitize(twitchUser.login))
         .replace("%url%", `https://www.twitch.tv/${twitchUser.login}`),
     });
   },
