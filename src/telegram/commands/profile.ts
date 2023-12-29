@@ -9,7 +9,7 @@ import Sanitize from "../../utils/sanitizeMarkdown";
 import { Attributes } from "../client";
 
 module.exports = {
-  regex: /profile$/,
+  regex: /^\/profile$/,
   requireToken: true,
   async execute(attr: Attributes, localizationFile: any) {
     const { ctx, msg, userId } = attr;
