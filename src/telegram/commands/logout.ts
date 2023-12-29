@@ -9,7 +9,7 @@ module.exports = {
     const { ctx, msg, userId } = attr;
 
     if ((await IsHasTwitchToken(userId)) === false)
-      ctx.Reply(msg, {
+      return ctx.Reply(msg, {
         text: localizationFile["commands"]["logout"]["already_logged_out"],
       });
 

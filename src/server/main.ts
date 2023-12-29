@@ -96,7 +96,10 @@ const { TWITCH_CLIENT_ID, TWITCH_CLIENT_TOKEN, PORT } = process.env;
           GetLocalizationFile(Number(user.user_id)).then((file) => {
             SendNotification(
               user.user_id,
-              file["commands"]["login"]["logged_in"],
+              /*
+               * Note: The "⭐" commands are the way how I show to user that command requires token.
+               * Example: /import - ⭐ Import streamers from Twitch
+               */ file["commands"]["login"]["logged_in"],
               Client
             );
           });
