@@ -55,7 +55,8 @@
       "imported": "🎉 You have successfully imported followed streamers from Twitch!",
       "no_new_followed": "👀 You already following all streamers from Twitch!",
       "no_followed": "😭 You don't follow any streamers on Twitch!",
-      "cancelled": "👍 Import cancelled!"
+      "cancelled": "👍 Import cancelled!",
+      "already_importing": "👀 You are already importing your followed streamers from Twitch!"
     },
     "commands": {
       "text": "📝 Commands\nHere is a list of all available commands:\n\n*/commands* - Get intormation about all commands\n*/follow* - Follow a streamer. Usage: `/follow [username]` Example: `/follow richardscull`\n*/following* - Get a list of all followed streamers.\n*/github* - Get a link to bot's GitHub repository.\n*/import* - Import all followed streamers from Twitch. Requires to be logged in\n*/language* - Change bot's language.\n*/login* - Login to Twitch.\n*/logout* - Logout from Twitch.\n*/logout* - Logout from Twitch.\n*/profile* - Get a profile of a streamer. Requires to be logged in. Usage: `/profile`. _Alternative usage:_ `/profile [username]`. Example: `/profile richardscull`\n*/start* - Get a welcome message.\n*/unfollow* - Unfollow a streamer. Usage: `/unfollow [username]`. Example: `/unfollow richardscull`"

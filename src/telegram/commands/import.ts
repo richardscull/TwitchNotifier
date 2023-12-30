@@ -6,11 +6,18 @@ import { Decrypt } from "../../utils/crypterTools";
 import log from "../../utils/logger";
 import { Attributes } from "../client";
 
+const queue = new Map();
+
 module.exports = {
   regex: /^\/import$/,
   requireToken: true,
   async execute(attr: Attributes, localizationFile: any) {
     const { ctx, msg, userId } = attr;
+
+    if (queue.has(userId))
+      return ctx.Reply(msg, {
+        text: localizationFile["commands"]["import"]["already_importing"],
+      });
 
     const message = await ctx.Reply(msg, {
       text: localizationFile["commands"]["import"]["importing"],
@@ -63,6 +70,13 @@ module.exports = {
 module.exports.confirm = async (attr: Attributes, localizationFile: any) => {
   const { ctx, msg, userId } = attr;
 
+  if (queue.has(userId))
+    return ctx.EditMessage(msg, {
+      text: localizationFile["commands"]["import"]["already_importing"],
+    });
+
+  queue.set(userId, true);
+
   const streamers = await getNewFollowedStreamers(userId).then((res) => {
     return res.streamers;
   });
@@ -102,6 +116,8 @@ module.exports.confirm = async (attr: Attributes, localizationFile: any) => {
       .lean()
       .exec();
   }
+
+  queue.delete(userId);
 
   ctx.EditMessage(msg, {
     text: localizationFile["commands"]["import"]["imported"],
