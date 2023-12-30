@@ -3,7 +3,7 @@ import "./utils/checkEnv";
 
 // 📃: Used for debugging purposes.
 // If you are not a developer, it's better to leave options below as is.
-export const USELOGGER = false;
+export const USELOGGER = true;
 export const BRANCH = "PROD" as "DEV" | "PROD";
 
 import "./utils/watermark"; // Print watermark in console

@@ -59,10 +59,11 @@ async function refreshToken(user: any): Promise<boolean> {
     .then((res) => {
       if (!res.data.access_token) return false;
       return UserModel.findOneAndUpdate(
-        { userid: user.user_id },
+        { user_id: user.user_id },
         {
           $set: {
             token: {
+              user_id: user.token.user_id,
               access_token: Encrypt(res.data.access_token),
               refresh_token: Encrypt(res.data.refresh_token),
               expires_at: new Date().getTime() + res.data.expires_in * 1000,
