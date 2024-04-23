@@ -2,7 +2,7 @@ import { Attributes, TelegramClient } from "../client";
 
 module.exports = {
   regex: /^\/github$/,
-  requireToken: true,
+  requireToken: false,
   execute(attr: Attributes, localizationFile: any) {
     const { ctx, msg, userId } = attr;
 

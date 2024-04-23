@@ -41,5 +41,8 @@ export default async function getAppToken() {
         .exec();
 
       return res.data.access_token;
+    })
+    .catch(() => {
+      throw new Error("Couldn't get access_token");
     });
 }

@@ -76,5 +76,8 @@ async function refreshToken(user: any): Promise<boolean> {
         .then(() => {
           return true;
         });
+    })
+    .catch(() => {
+      return false;
     });
 }
