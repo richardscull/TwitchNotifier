@@ -1,0 +1,7 @@
+name: twitch-botifier
+services:
+  telegram-bot:
+    build: .
+    ports:
+      - "${PORT}:${PORT}"
+    restart: unless-stopped
