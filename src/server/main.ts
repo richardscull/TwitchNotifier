@@ -125,7 +125,7 @@ const { TWITCH_CLIENT_ID, TWITCH_CLIENT_TOKEN, PORT, HOST_URI } = process.env;
     res.send("🚀 Started successfully"); // todo: rewrite
   });
 
-  app.listen({ port: Number(PORT) | 3000 }, (err: any, adr: any) => {
+  app.listen({ port: Number(PORT) || 3000 }, (err: any, adr: any) => {
     if (err) throw err;
     log(`🚀 Server started on port ${adr}`);
   });
