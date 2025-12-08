@@ -14,7 +14,7 @@
   "dependencies": {
     "@fastify/static": "^6.12.0",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
-    "axios": "^1.6.2",
+    "axios": "^1.12.0",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.0.3",
     "eslint": "^8.38.0",
