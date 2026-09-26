@@ -2,31 +2,36 @@
   "name": "twitch-botifier",
   "version": "1.0.0",
   "description": "A bot that notifies you when a streamer goes live",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
     "build": "npm run clearAndCopy && tsc && echo 🛫 Successfully builded an app!\n",
     "start": "node build/index.js",
     "buildRun": "npm run build && npm run start",
-    "clearAndCopy": "rimraf build/server && copyfiles -e src/server/*.ts -u 1 src/server/static/** build/"
+    "clearAndCopy": "node -e \"const{rmSync,mkdirSync,readdirSync,copyFileSync}=require('fs'),s='src/server/static',d='build/server/static';rmSync('build/server',{recursive:true,force:true});mkdirSync(d,{recursive:true});for(const f of readdirSync(s))copyFileSync(s+'/'+f,d+'/'+f)\""
   },
   "author": "richardscull",
   "license": "ISC",
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
-    "@fastify/static": "^6.12.0",
-    "@typescript-eslint/eslint-plugin": "^5.58.0",
-    "axios": "^1.12.0",
-    "bcrypt": "^6.0.0",
-    "dotenv": "^16.0.3",
-    "eslint": "^8.38.0",
-    "express": "^5.2.1",
-    "express-session": "^1.18.2",
-    "fastify": "^4.28.1",
-    "mongoose": "^8.9.5",
-    "node-telegram-bot-api": "^0.61.0"
+    "@fastify/static": "^10.1.5",
+    "axios": "^1.20.0",
+    "dotenv": "^18.0.4",
+    "fastify": "^5.12.5",
+    "mongoose": "^8.24.4",
+    "node-telegram-bot-api": "^0.67.0"
   },
   "devDependencies": {
-    "@types/node": "^20.10.4",
-    "@types/node-telegram-bot-api": "^0.61.6",
-    "copyfiles": "^2.4.1"
+    "@types/node": "^22.20.1",
+    "@types/node-telegram-bot-api": "^0.64.15",
+    "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "node-telegram-bot-api": {
+      "@cypress/request": "^4.0.1"
+    },
+    "request": "npm:@cypress/request@^4.0.1",
+    "form-data": "^4.0.6"
   }
 }

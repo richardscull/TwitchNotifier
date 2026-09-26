@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ quiet: true });
 import "./utils/checkEnv";
 
 // 📃: Used for debugging purposes.
